@@ -15,7 +15,6 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-// var quantity = [];
 var inventory = [];
 var quantity = [];
 
@@ -23,10 +22,6 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     prompt();
-    // addInventory();
-
-    // products();
-
 });
 
 function products() {
@@ -128,9 +123,47 @@ function inventoryPrompt(inventory) {
     });
 };
 
-function newProduct() {
+function newProductAdd(item, department, price, quantity) {
+    connection.query(
+        "INSERT INTO products SET ?",
+        {
+          product_name: item,
+          department_name: department,
+          price: price,
+          quantity: quantity
+        },
+        function(err, res) {
+          if (err) throw err;
+          console.log(item + " added to inventory!\n");
+          connection.end();
 
+    });
 };
+
+function newProductQuery() {
+    inquirer.prompt([
+        {
+            name: "item",
+            message: "What is the Product's name?"
+        },
+        {
+            name: "department",
+            message: "What department does the item belong to?"
+        },
+        {
+            name: "price",
+            type: "number",
+            message: "How much does each unit cost?"
+        },
+        {
+            name: "quantity",
+            type: "number",
+            message: "How many units exist?"
+        },
+    ]).then(function (answers) {
+        newProductAdd(answers.item, answers.department, answers.price, answers.quantity);
+    });
+}
 
 function prompt() {
     inquirer.prompt([
@@ -142,7 +175,6 @@ function prompt() {
                 "Add to Inventory", "Add New Product"]
         }
     ]).then(function (answers) {
-        // Use user feedback for... whatever!!
         console.log(answers.option);
         switch (answers.option) {
             case "View Products for Sale":
@@ -155,7 +187,7 @@ function prompt() {
                 addInventory();
                 break;
             case "Add New Product":
-                newProduct();
+                newProductQuery();
                 break;
             default:
                 console.log("something went wrong")
@@ -163,25 +195,3 @@ function prompt() {
     });
 };
 
-// function prompt(products, quantity) {
-//     console.log(products[0], quantity[0]);
-//     inquirer.prompt([
-//         /* Pass your questions in here */
-//         {
-//             name: 'choice',
-//             type: "list",
-//             message: 'What is item would you like to buy?',
-//             choices: products
-//         },
-//     ])
-//         .then(function (answers) {
-//             var choice = answers.product;
-//             // Use user feedback for... whatever!!
-//             console.log("You chose: " + choice.charAt(0));
-//             quant(choice.charAt(0), choice);
-//         });
-// };
-
-// function products() {
-
-// }
