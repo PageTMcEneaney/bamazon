@@ -60,28 +60,26 @@ function quant(item_id, product) {
         }
     ])
         .then(function (answers) {
+
             var choice = answers.quantity;
             if (choice < 1) {
-                console.log("That's ok! Feel free to keep browsing")
-
+                console.log("\nYou don't want any?\nThat's ok! Feel free to keep browsing\nType 'node app.js' to restart your order\n");
+                connection.end();
+                // return productList();
             } else {
                 if (choice === 1) {
-                    console.log("Great! You've purchased one " + product)
+                    console.log("Great! You've purchased one item!")
                     orderUp(1, product.charAt(0));
 
                 } else if (choice > 1) {
-                    console.log("Great! You've purchased " + choice + " units of " + product);
+                    console.log("Great! You've purchased " + choice + " items!");
                     orderUp(choice, product.charAt(0), currentQuant);
 
                 }
             }
 
-            // Use user feedback for... whatever!!
-
         });
 };
-
-
 
 
 function prompt(products, quantity) {
@@ -98,12 +96,10 @@ function prompt(products, quantity) {
         .then(function (answers) {
             var choice = answers.product;
             // Use user feedback for... whatever!!
-            console.log(choice.charAt(0));
+            console.log("You chose: " + choice.charAt(0));
             quant(choice.charAt(0), choice);
         });
 }
-
-
 
 function productList() {
     connection.query("SELECT item_id, product_name, quantity FROM products", function (err, res) {
@@ -124,23 +120,41 @@ function productList() {
 
 function orderUp(bought, item, currentQuant) {
     var int = parseInt(item);
-    console.log(bought, int, currentQuant);
 
+    connection.query("SELECT price, product_name FROM products WHERE ?",
+        {
+            item_id: item,
+        },
+        function (err, res) {
+            if (err) throw err;
+
+            var itemPrice = res[0].price;
+            var itemName = res[0].product_name;
+            console.log("\n$" + res[0].price + " per " + res[0].product_name + "\nTotal Cost for " + bought + ": $" + (itemPrice * bought))
+
+            // console.log("Total cost for " + bought + ": $" + (itemPrice * bought));
+            orderUpdate(bought, int, currentQuant, itemName);
+        });
+
+}
+
+function orderUpdate(bought, int, currentQuant, itemName) {
     connection.query("UPDATE products SET ? WHERE ?",
         [
             {
                 quantity: currentQuant - bought
             },
             {
-                item_id: item
+                item_id: int
             }
         ],
         function (err, res) {
             if (err) throw err;
 
-            console.log(res.affectedRows + " quant updated!\n");
+            console.log("\nQuantity updated for Item: " + itemName + "\nItem ID: " + int + "\nNew Quantity: " + (currentQuant - bought));
             // console.log("Total cost for " + bought + ": $" + (res[item]));
 
             connection.end();
         });
+
 }
