@@ -23,7 +23,6 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
 
-    // prompt();
     productList();
 
 });
@@ -81,7 +80,6 @@ function quant(item_id, product) {
         });
 };
 
-
 function prompt(products, quantity) {
     console.log(products[0], quantity[0]);
     inquirer.prompt([
@@ -99,7 +97,7 @@ function prompt(products, quantity) {
             console.log("You chose: " + choice.charAt(0));
             quant(choice.charAt(0), choice);
         });
-}
+};
 
 function productList() {
     connection.query("SELECT item_id, product_name, quantity FROM products", function (err, res) {
@@ -116,7 +114,7 @@ function productList() {
     });
     // console.log(products);
 
-}
+};
 
 function orderUp(bought, item, currentQuant) {
     var int = parseInt(item);
@@ -136,7 +134,7 @@ function orderUp(bought, item, currentQuant) {
             orderUpdate(bought, int, currentQuant, itemName);
         });
 
-}
+};
 
 function orderUpdate(bought, int, currentQuant, itemName) {
     connection.query("UPDATE products SET ? WHERE ?",
@@ -157,4 +155,4 @@ function orderUpdate(bought, int, currentQuant, itemName) {
             connection.end();
         });
 
-}
+};
