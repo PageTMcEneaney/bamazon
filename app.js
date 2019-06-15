@@ -68,7 +68,7 @@ function quant(item_id, product) {
             } else {
                 if (choice === 1) {
                     console.log("Great! You've purchased one item!")
-                    orderUp(1, product.charAt(0));
+                    orderUp(1, product.charAt(0), currentQuant);
 
                 } else if (choice > 1) {
                     console.log("Great! You've purchased " + choice + " items!");

@@ -20,19 +20,48 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
     prompt();
 
-    connection.end();
 });
 
 function productSales() {
-    connection.query("SELECT price, product_name, product_sales FROM products WHERE ?",
-    {
-        item_id: item,
-    },
-    function (err, res) {
+    var joinStatement = "SELECT b.department_id, a.department_name, SUM(a.product_sales) AS product_sales, (SUM(a.product_sales) - over_head_costs) AS total_profit, b.over_head_costs FROM (SELECT * FROM products) a INNER JOIN (SELECT * FROM departments) b ON (a.department_name = b.department_name) GROUP BY a.department_name;";
+    connection.query(joinStatement, function (err, res) {
         if (err) throw err;
+        console.table(res);
+
+        connection.end();
+
     });
 }
 
+function deptQuery(){
+    inquirer.prompt([
+        {
+            name: "name",
+            message: "What is the name of your new Department?",
+        },
+        {
+            name: "cost",
+            type: "number",
+            message: "What is the total Overhead Cost for this Department?",
+        },
+    ]).then(function (answers) {
+        console.log(answers.name, answers.cost)
+        newDept(answers.name, answers.cost)
+    });
+};
+
+function newDept(name, cost) {
+    connection.query("INSERT INTO departments SET ?", 
+    {
+        department_name: name,
+        over_head_costs: cost
+    }, 
+    function (err, res) {
+        if (err) throw err;
+        connection.end();
+
+    });
+}
 
 function prompt() {
     inquirer.prompt([
@@ -46,10 +75,10 @@ function prompt() {
         console.log(answers.option);
         switch (answers.option) {
             case "View Product Sales by Department":
-                // productSales();
+                productSales();
                 break;
             case "Create New Department":
-                // newDept();
+                deptQuery();
                 break;
             default:
                 console.log("something went wrong")
