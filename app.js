@@ -119,7 +119,7 @@ function productList() {
 function orderUp(bought, item, currentQuant) {
     var int = parseInt(item);
 
-    connection.query("SELECT price, product_name FROM products WHERE ?",
+    connection.query("SELECT price, product_name, product_sales FROM products WHERE ?",
         {
             item_id: item,
         },
@@ -128,23 +128,24 @@ function orderUp(bought, item, currentQuant) {
 
             var itemPrice = res[0].price;
             var itemName = res[0].product_name;
-            console.log("\n$" + res[0].price + " per " + res[0].product_name + "\nTotal Cost for " + bought + ": $" + (itemPrice * bought))
-
-            // console.log("Total cost for " + bought + ": $" + (itemPrice * bought));
-            orderUpdate(bought, int, currentQuant, itemName);
+            var total = (itemPrice * bought);
+            var prevSales = res[0].product_sales;
+            console.log("\n$" + res[0].price + " per " + res[0].product_name + "\nTotal Cost for " + bought + ": $" + total);
+            orderUpdate(bought, int, currentQuant, itemName, total, prevSales);
         });
 
 };
 
-function orderUpdate(bought, int, currentQuant, itemName) {
+function orderUpdate(bought, int, currentQuant, itemName, total, prevSales) {
     connection.query("UPDATE products SET ? WHERE ?",
         [
             {
-                quantity: currentQuant - bought
+                quantity: currentQuant - bought,
+                product_sales: total + prevSales
             },
             {
                 item_id: int
-            }
+            },
         ],
         function (err, res) {
             if (err) throw err;
