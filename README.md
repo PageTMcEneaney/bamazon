@@ -25,7 +25,7 @@ Example:
  - supervisor.js: prompts the user to select from the following:
 
         View Product Sales by Department | Create New Department
-
+        
      - View Product Sales by Department: inner joins the products and departments tables and displays a table with department ID, department name, total product sales per department, total profit(sales - overhead), and over head costs per department
      - Create New Department: prompts the supervisor to create a new department and requires a name and a numerical value for the overhead cost
 
@@ -45,4 +45,4 @@ Example:
 --------------------------------
     node app.js | node manager.js | node supervisor.js
     
-https://drive.google.com/file/d/11NRy0AQbmkCEBQziCApZDSlPDf3mfcs7/view
+![video demo of CLI function](https://drive.google.com/file/d/11NRy0AQbmkCEBQziCApZDSlPDf3mfcs7/view)
