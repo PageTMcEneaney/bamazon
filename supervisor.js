@@ -69,7 +69,8 @@ function prompt() {
             name: "option",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Product Sales by Department", "Create New Department"]
+            choices: ["View Product Sales by Department", 
+            "Create New Department"]
         }
     ]).then(function (answers) {
         console.log(answers.option);
