@@ -44,5 +44,7 @@ Example:
 ## Video Demo of function
 --------------------------------
     node app.js | node manager.js | node supervisor.js
-    
+
 ![video demo of CLI function](https://drive.google.com/file/d/11NRy0AQbmkCEBQziCApZDSlPDf3mfcs7/view)
+
+https://drive.google.com/file/d/11NRy0AQbmkCEBQziCApZDSlPDf3mfcs7/view
